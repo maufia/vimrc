@@ -2,6 +2,10 @@
 " Use of this source code is governed by a BSD-style
 " license that can be found in the LICENSE file.
 
+" don't spam the user when Vim is started in Vi compatibility mode
+let s:cpo_save = &cpo
+set cpo&vim
+
 let s:buf_nr = -1
 
 function! go#doc#OpenBrowser(...) abort
@@ -122,9 +126,12 @@ function! s:GodocView(newposition, position, content) abort
   setlocal nomodifiable
   sil normal! gg
 
-  " close easily with <esc> or enter
+  " close easily with enter
   noremap <buffer> <silent> <CR> :<C-U>close<CR>
   noremap <buffer> <silent> <Esc> :<C-U>close<CR>
+  " make sure any key that sends an escape as a prefix (e.g. the arrow keys)
+  " don't cause the window to close.
+  nnoremap <buffer> <silent> <Esc>[ <Esc>[
 endfunction
 
 function! s:gogetdoc(json) abort
@@ -185,5 +192,9 @@ function! s:godocWord(args) abort
 
   return [pkg, exported_name]
 endfunction
+
+" restore Vi compatibility settings
+let &cpo = s:cpo_save
+unlet s:cpo_save
 
 " vim: sw=2 ts=2 et

@@ -13,6 +13,10 @@ if exists("b:did_indent")
 endif
 let b:did_indent = 1
 
+" don't spam the user when Vim is started in Vi compatibility mode
+let s:cpo_save = &cpo
+set cpo&vim
+
 " C indentation is too far off useful, mainly due to Go's := operator.
 " Let's just define our own.
 setlocal nolisp
@@ -24,7 +28,7 @@ if exists("*GoIndent")
   finish
 endif
 
-function! GoIndent(lnum)
+function! GoIndent(lnum) abort
   let prevlnum = prevnonblank(a:lnum-1)
   if prevlnum == 0
     " top of file
@@ -38,10 +42,17 @@ function! GoIndent(lnum)
 
   let ind = previ
 
-  if prevl =~ ' = `[^`]*$'
-    " previous line started a multi-line raw string
-    return 0
-  endif
+  for synid in synstack(a:lnum, 1)
+    if synIDattr(synid, 'name') == 'goRawString'
+      if prevl =~ '\%(\%(:\?=\)\|(\|,\)\s*`[^`]*$'
+        " previous line started a multi-line raw string
+        return 0
+      endif
+      " return -1 to keep the current indent.
+      return -1
+    endif
+  endfor
+
   if prevl =~ '[({]\s*$'
     " previous line opened a block
     let ind += shiftwidth()
@@ -67,5 +78,9 @@ function! GoIndent(lnum)
 
   return ind
 endfunction
+
+" restore Vi compatibility settings
+let &cpo = s:cpo_save
+unlet s:cpo_save
 
 " vim: sw=2 ts=2 et
