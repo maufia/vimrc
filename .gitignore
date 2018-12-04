@@ -6,4 +6,4 @@ my_configs.vim
 tags
 .DS_Store
 *.swp
-sources_non_forked/**
+sources_non_forked/
