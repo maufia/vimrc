@@ -162,7 +162,7 @@ let g:go_fmt_command = "goimports"
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:ale_linters = {
 \   'javascript': ['jshint'],
-\   'python': ['pylint'],
+\   'python': ['pylint', 'flake8'],
 \   'go': ['go', 'golint', 'errcheck']
 \}
 
