@@ -131,6 +131,9 @@ set number relativenumber
 " MF: Set column for python
 set colorcolumn=80
 
+" MF: Set nocompatible for vimwiki
+" set nocompatible
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Colors and Fonts
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
